@@ -1,0 +1,9 @@
+svg {
+    background-color: yellow;
+}
+
+.svg-txt {
+    fill: blue;
+    stroke: black;
+    stroke-width: 5px;
+}

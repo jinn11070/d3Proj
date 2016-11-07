@@ -1,0 +1,10 @@
+ul {
+    display: inline-block;
+    list-style: none;
+}
+
+
+li.column {
+    float: left;
+    border: 1px solid red;
+}

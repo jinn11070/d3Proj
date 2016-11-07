@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>D3 Visualization</title>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="style/style.css">
+
+
+</head>
+<body>
+	<div id="top">D3 Visualization</div>
+	<div id="content">
+	</div>
+	<div id="footer">Datastreams Jung Soo jin</div>
+
+	<script type="text/javascript">
+
+		//가로 100, 세로 1000 짜리 스케치북 구입
+		var content = d3.select("#content")
+				.append("svg")
+				.attr("width", 1000)
+				.attr("height", 1000)
+				.style("background-color", "yellow")
+
+		// circle 그리기
+		// r : 반지름
+		// CX,CY : 원의 중심의 x, y 좌표
+		var circle = content.append("circle")
+				.attr("r", 40)
+				.attr("cx", 50)
+				.attr("cy", 50)
+
+		// circle 스타일 주기
+		circle.style("fill", "crimson")
+				.style("stroke", "#1c1d1f")
+				.style("stroke-width", "3")
+
+		// circle에 애니메이션 효과 주기
+		circle.transition()
+				.delay(1000) // 늘어날수록 더 오래있다가 변함
+				.duration(1000) // 늘어날수록 더 오랜시간동안 길게 변함
+				.attr("r", 60)
+				.attr("cx", 70)
+				.attr("cy", 70)
+
+		// circle 마우스 오버 아웃 시에 효과주기
+		circle.on("mouseover", function() {
+			// circle 혹은 d3.select(this)
+			circle.style("stroke", "pink")
+					.style("stroke-width", 7)
+		}).on("mouseout", function() {
+			circle.style("stroke", "#1c1d1f")
+					.style("stroke-width", "3")
+		})
+
+		// data binding 하기
+		var data = [1,2,3];
+
+		content.selectAll("rect")
+				.data(data)
+				.enter()
+				.append("rect")
+
+				.attr("width", 30)
+				.attr("height", 30)
+				.style("fill", "green")
+				.style("stroke", "brown")
+				.style("stroke-width", 8)
+				.attr("x", function(d, i) {return 10 + (i * 60)})
+				.attr("y", 200);
+
+		// style을 주지 않고  class를 적용하는 방법
+		var rect = content.append("rect")
+
+		rect.attr("width", 200)
+				.attr("height", 50)
+				.attr("x", 60)
+				.attr("y", 300)
+				.text("Welcome to Svg World")
+
+				.attr("class", "svg-txt")
+	</script>
+</body>
+</html>

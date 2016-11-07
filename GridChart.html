@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>D3 Visualization</title>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="style/style.css">
+	<link rel="stylesheet" type="text/css" href="style/chart.css">
+	<link rel="stylesheet" type="text/css" href="style/grid.css">
+
+
+</head>
+<body>
+	<div id="top">D3 Visualization</div>
+	<div id="content">
+	</div>
+	<div id="footer">Datastreams Jung Soo jin</div>
+
+	<script type="text/javascript">
+
+		//가로 100, 세로 1000 짜리 스케치북 구입
+		var content = d3.select("#content")
+				.append("div")
+				.attr("width", 1000)
+				.attr("height", 1000)
+
+		var ul = content.append("ul")
+				.attr("width", 500)
+				.attr("height", 500)
+
+		// csv 방식으로 데이터 가져옴
+		var csvData = d3.csv("data/sample.csv", function(error, csv) {
+			if (error) {
+				console.log(error);
+				return false;
+			}
+
+			/* 차트그리기 */
+			drawChart(csv);
+		})
+
+		/*
+			policyID,statecode,county,eq_site_limit,hu_site_limit,fl_site_limit,fr_site_limit,tiv_2011,tiv_2012,eq_site_deductible,hu_site_deductible,fl_site_deductible,fr_site_deductible,point_latitude,point_longitude,line,construction,point_granularity
+			119736,FL,CLAY COUNTY,498960,498960,498960,498960,498960,792148.9,0,9979.2,0,0,30.102261,-81.711777,Residential,Masonry,1 --> data
+		*/
+
+		/*
+			[{"policyID":119736, "statecode":"FL" ...}, // row
+				{...}
+			] // result
+		*/
+
+		function drawChart(data) {
+
+			var ul = content.select("ul");
+
+			data.forEach(function(d) {
+
+				var keys = Object.keys(d);
+				ul.selectAll(".column")
+						.data(keys)
+						.enter()
+						.append("li")
+
+						.attr("class","column")
+						.text(function(d) {
+							console.log(d)
+							return d;
+						})
+
+
+			})
+			/*ul.selectAll("li")
+					.data(data)
+					.enter()
+					.append("li")
+					.text(function(d, i) {
+						console.log(d);
+						return d.
+					})
+*/
+
+		}
+	</script>
+</body>
+</html>
