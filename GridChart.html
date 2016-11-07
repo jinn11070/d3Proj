@@ -27,9 +27,11 @@
 				.attr("width", 1000)
 				.attr("height", 1000)
 
-		var ul = content.append("ul")
-				.attr("width", 500)
-				.attr("height", 500)
+		var table = content.append("table");
+        var thead = table.append("thead");
+        var tbody = table.append("tbody");
+
+
 
 		// csv 방식으로 데이터 가져옴
 		var csvData = d3.csv("data/sample.csv", function(error, csv) {
@@ -55,34 +57,80 @@
 
 		function drawChart(data) {
 
-			var ul = content.select("ul");
+			var thead = table.select("thead");
+            var theadTr = thead.append("tr");
 
+            /* th columns */
+            var columns = data.columns;
+
+            theadTr.selectAll(".column")
+                .data(columns)
+                .enter()
+                .append("th")
+
+                .attr("class","column")
+                .text(function(d) {
+                    return d;
+                })
+
+
+            var tbody = table.select("tbody");
+
+            /* td rows */
 			data.forEach(function(d) {
 
-				var keys = Object.keys(d);
-				ul.selectAll(".column")
-						.data(keys)
-						.enter()
-						.append("li")
+                var tbodyTr = tbody.append("tr")
 
-						.attr("class","column")
-						.text(function(d) {
-							console.log(d)
-							return d;
-						})
+                var row = d3.values(d)
 
+                console.log(row);
 
+                tbodyTr.selectAll(".row")
+                        .data(row)
+                        .enter()
+                        .append("td")
+
+                        .attr("class", "row")
+                        .text(function(d) {
+                            return d;
+                        })
 			})
-			/*ul.selectAll("li")
-					.data(data)
-					.enter()
-					.append("li")
-					.text(function(d, i) {
-						console.log(d);
-						return d.
-					})
-*/
 
+            /* 테이블은 아래 와 같이 그려져야 함. */
+            /*<table>
+                <thead>
+                    <tr>
+                        <th class="column">street</th>
+                        <th class="column">city</th>
+                        <th class="column">zip</th>
+                        <th class="column">state</th>
+                        <th class="column">beds</th>
+                        <th class="column">baths</th>
+                        <th class="column">sq__ft</th>
+                        <th class="column">type</th>
+                        <th class="column">sale_date</th>
+                        <th class="column">price</th>
+                        <th class="column">latitude</th>
+                        <th class="column">longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="value">3526 HIGH ST</td>
+                        <td class="value">SACRAMENTO</td>
+                        <td class="value">95838</td>
+                        <td class="value">CA</td>
+                        <td class="value">2</td>
+                        <td class="value">1</td>
+                        <td class="value">836</td>
+                        <td class="value">Residential</td>
+                        <td class="value">Wed May 21 00:00:00 EDT 2008</td>
+                        <td class="value">59222</td>
+                        <td class="value">38.631913</td>
+                        <td class="value">-121.434879</td>
+                    </tr>
+                </tbody>
+            </table>*/
 		}
 	</script>
 </body>

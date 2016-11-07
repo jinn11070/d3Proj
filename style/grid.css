@@ -1,10 +1,10 @@
-ul {
-    display: inline-block;
-    list-style: none;
+table {
+    border-collapse: collapse;
+
+    /*collapse : 서로 이웃하는 테이블이나 셀의 테두리선을 겹쳐서 표현 합니다.*/
+    /*separate : 기본값으로 서로 이웃하는 테이블이나 셀의 테두리선을 분리시켜 표현 합니다.*/
 }
 
-
-li.column {
-    float: left;
-    border: 1px solid red;
+th, td {
+    border: 1px solid gray;
 }
