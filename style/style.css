@@ -1,21 +1,49 @@
-body {
+body, body *{
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-}
-
-div#top {
-    height: 100px;
-    background-color: chartreuse;
     font-size: 15px;
 }
 
+#top {
+    padding: 30px 30px;
+    height: 50px;
+    background-color: #0AAC87;
+    font-family: 'Roboto thin', sans-serif;
+    font-weight: 900;
+    font-size: 2em;
+    color: #30333C;
+    line-height: 50px;
+    border-top: 5px solid #30333C;
+}
+
+#topmenu ul {
+    display: inline-block;
+    width: 100%;
+    font-weight: 500;
+    color: white;
+    list-style: none;
+    background-color: #30333C;
+}
+
+#topmenu li {
+    float: left;
+    margin: 15px 0px 15px 30px;
+    cursor: pointer;
+}
+
+#topmenu li:hover {
+    color: #0AAC87;
+}
+
 #content {
-    padding: 30px 15px;
+    padding: 30px 30px;
 }
 
 #footer {
+    padding: 30px 30px;
     height: 50px;
+    line-height: 50px;
     background-color: #1c1d1f;
     color: white;
 }

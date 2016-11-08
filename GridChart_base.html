@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--<meta charset="UTF-8">
+    <title>D3 Visualization</title>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link rel="stylesheet" type="text/css" href="style/chart.css">-->
+	<link rel="stylesheet" type="text/css" href="style/grid.css">
+</head>
+<body>
+	<!--<div id="top">D3 Visualization</div>
+	<div id="content">
+	</div>
+	<div id="footer">Datastreams Jung Soo jin</div>-->
+
+	<script type="text/javascript">
+
+		//가로 100, 세로 1000 짜리 스케치북 구입
+        var content = d3.select("#content")
+                .append("div")
+                .attr("width", 1000)
+                .attr("height", 1000)
+
+		var table = content.append("table");
+        var thead = table.append("thead");
+        var tbody = table.append("tbody");
+
+		// csv 방식으로 데이터 가져옴
+		var csvData = d3.csv("data/sample.csv", function(error, csv) {
+			if (error) {
+				console.log(error);
+				return false;
+			}
+
+			/* 차트그리기 */
+			drawChart(csv);
+		})
+
+		/*
+			policyID,statecode,county,eq_site_limit,hu_site_limit,fl_site_limit,fr_site_limit,tiv_2011,tiv_2012,eq_site_deductible,hu_site_deductible,fl_site_deductible,fr_site_deductible,point_latitude,point_longitude,line,construction,point_granularity
+			119736,FL,CLAY COUNTY,498960,498960,498960,498960,498960,792148.9,0,9979.2,0,0,30.102261,-81.711777,Residential,Masonry,1 --> data
+		*/
+
+		/*
+			[{"policyID":119736, "statecode":"FL" ...}, // row
+				{...}
+			] // result
+		*/
+
+		function drawChart(data) {
+
+			var thead = table.select("thead");
+            var theadTr = thead.append("tr");
+
+            /* th columns */
+            var columns = data.columns;
+
+            theadTr.selectAll(".column")
+                .data(columns)
+                .enter()
+                .append("th")
+
+                .attr("class","column")
+                .text(function(d) {
+                    return d;
+                })
+
+
+            var tbody = table.select("tbody");
+
+            /* td rows */
+			data.forEach(function(d) {
+
+                var tbodyTr = tbody.append("tr")
+
+                var row = d3.values(d)
+
+                console.log(row);
+
+                tbodyTr.selectAll(".row")
+                        .data(row)
+                        .enter()
+                        .append("td")
+
+                        .attr("class", "row")
+                        .text(function(d) {
+                            return d;
+                        })
+			})
+
+            /* 테이블은 아래 와 같이 그려져야 함. */
+            /*<table>
+                <thead>
+                    <tr>
+                        <th class="column">street</th>
+                        <th class="column">city</th>
+                        <th class="column">zip</th>
+                        <th class="column">state</th>
+                        <th class="column">beds</th>
+                        <th class="column">baths</th>
+                        <th class="column">sq__ft</th>
+                        <th class="column">type</th>
+                        <th class="column">sale_date</th>
+                        <th class="column">price</th>
+                        <th class="column">latitude</th>
+                        <th class="column">longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="value">3526 HIGH ST</td>
+                        <td class="value">SACRAMENTO</td>
+                        <td class="value">95838</td>
+                        <td class="value">CA</td>
+                        <td class="value">2</td>
+                        <td class="value">1</td>
+                        <td class="value">836</td>
+                        <td class="value">Residential</td>
+                        <td class="value">Wed May 21 00:00:00 EDT 2008</td>
+                        <td class="value">59222</td>
+                        <td class="value">38.631913</td>
+                        <td class="value">-121.434879</td>
+                    </tr>
+                </tbody>
+            </table>*/
+		}
+	</script>
+</body>
+</html>

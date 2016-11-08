@@ -1,0 +1,11 @@
+text {
+    fill: black;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.line {
+    fill: none;
+    stroke: #30333C;
+    stroke-width: 2px;
+}
