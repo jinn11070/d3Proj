@@ -4,8 +4,30 @@ text {
     font-weight: bold;
 }
 
+.grid {
+    stroke-dasharray: 1,1;
+    stroke-opacity: .6;
+}
+
 .line {
     fill: none;
     stroke: #30333C;
     stroke-width: 2px;
+}
+
+.area {
+    fill: #30333C;
+    opacity: .5;
+}
+
+.circle-over {
+    fill: #ffffff;
+    stroke: red;
+    stroke-width: 4
+
+}
+.circle-out {
+    fill: #ffffff;
+    stroke: #0AAC87;
+    stroke-width: 3
 }
