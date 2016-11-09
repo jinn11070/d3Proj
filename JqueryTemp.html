@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="style/style.css">
 </head>
 <body>
-<div id="top"><span>D3 Visualization</span></div>
+<div id="top"><span>jquery</span></div>
 </div>
 <div id="topmenu">
 	<ul>
@@ -48,7 +48,8 @@
 
 
 
-		$("#content").html("Hello World!")
+		$("#content").html("<span>Hello World!</span>");
+		$("#content span")
 				.css("cursor", "pointer")
 				.on('click', function() {
 					alert("Welcome to jQuery World!");

@@ -5,87 +5,65 @@
 </head>
 <body>
 <script type="text/javascript">
-
     var svgWidth = 1200;
     // var svgHeight = 300;
-    // Legend¸¦ ³Ö±â À§ÇØ ³ôÀÌ ´Ã¸²
+    // Legendë¥¼ ë„£ê¸° ìœ„í•´ ë†’ì´ ëŠ˜ë¦¼
     var svgHeight = 300;
-
     var svg = content.append("svg")
             .attr("width", svgWidth)
             .attr("height", svgHeight);
-
-    /* canvas ³»ºÎ¿¡ °ø°£À» µÎ¾î ±×·¡ÇÁ ±×¸®±â */
-    // Legend¸¦ ³Ö±â À§ÇØ right¸¦ ´Ã¸²
+    /* canvas ë‚´ë¶€ì— ê³µê°„ì„ ë‘ì–´ ê·¸ë˜í”„ ê·¸ë¦¬ê¸° */
+    // Legendë¥¼ ë„£ê¸° ìœ„í•´ rightë¥¼ ëŠ˜ë¦¼
     var margin = {top: 20, right: 220, bottom: 25, left: 30};
     var legend_margin_left = 40
-
     var chartWidth = svgWidth - margin.left - margin.right;
     var chartHeight = svgHeight - margin.top - margin.bottom;
-
-    /* ±×¶óµ¥ÀÌ¼Ç »ö»ó ¼³Á¤ */
+    /* ê·¸ë¼ë°ì´ì…˜ ìƒ‰ìƒ ì„¤ì • */
     var color = d3.scaleOrdinal(d3.schemeCategory20)
     // d3.scaleOrdinal().range(["#E14D57", "#EC932F", "#71B37C", "#5290E9", "#965994"])
-    // d3.scaleLinear().domain([1,10]).range(["brown", "steelblue"]); // ±×¶óµ¥ÀÌ¼Ç
-
-    /* axis ¼³Á¤
-
-     ·¹ÀÌºí - xÃà:date, yÃà:cpu_user
-     ¼±½ºÅ¸ÀÏ - linear
-     µ¥ÀÌÅÍ¹üÀ§(domain) ½ÇÁ¦ ¼öÄ¡µéÀÇ min, max¸¦ Ã£¾Æ³»¾î ¹üÀ§¸¦ Á¤ÇÔ
-     Ç¥½ÃÇÒ¹üÀ§(range) ±×·¯Áú ½ºÄÉÀÏ ºñÀ²·Î Á¶ÀıµÊ.
-
+    // d3.scaleLinear().domain([1,10]).range(["brown", "steelblue"]); // ê·¸ë¼ë°ì´ì…˜
+    /* axis ì„¤ì •
+     ë ˆì´ë¸” - xì¶•:date, yì¶•:cpu_user
+     ì„ ìŠ¤íƒ€ì¼ - linear
+     ë°ì´í„°ë²”ìœ„(domain) ì‹¤ì œ ìˆ˜ì¹˜ë“¤ì˜ min, maxë¥¼ ì°¾ì•„ë‚´ì–´ ë²”ìœ„ë¥¼ ì •í•¨
+     í‘œì‹œí• ë²”ìœ„(range) ê·¸ëŸ¬ì§ˆ ìŠ¤ì¼€ì¼ ë¹„ìœ¨ë¡œ ì¡°ì ˆë¨.
      scaleBand
      scaleLinear
      scaleTime
-
      range
      rangeRound
      */
-    /* xÃàÀÇ ¹üÀ§ ¼³Á¤ */
+    /* xì¶•ì˜ ë²”ìœ„ ì„¤ì • */
     var x = d3.scaleBand()
-            .rangeRound([0, chartWidth]) // ¿Ş -> ¿À
+            .rangeRound([0, chartWidth]) // ì™¼ -> ì˜¤
             .domain(dataSet.map(function(d){return d.date}))
-
-    /* yÃàÀÇ ¹üÀ§ ¼³Á¤ */
+    /* yì¶•ì˜ ë²”ìœ„ ì„¤ì • */
     var y = d3.scaleLinear()
-            .rangeRound([chartHeight, 0]) // À§ -> ¾Æ·¡
+            .rangeRound([chartHeight, 0]) // ìœ„ -> ì•„ë˜
             .domain([0, d3.max(dataSet.map(function(d){return d.cpu_user}))])
-
-    /* axis Ãß°¡ */
-    // translate(¿Ş,À§)
+    /* axis ì¶”ê°€ */
+    // translate(ì™¼,ìœ„)
     var xAxis = svg.append("g")
             .attr("transform", "translate(" + margin.left + ", " + (margin.top + chartHeight) + ")")
             .call(d3.axisBottom(x));
-
     var yAxis = svg.append("g")
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
             .call(d3.axisLeft(y));
-
-
-
-    /* chart ±×¸®±â */
-
-    /* bar ³Êºñ */
+    /* chart ê·¸ë¦¬ê¸° */
+    /* bar ë„ˆë¹„ */
     var barWidth = 20;
-
-    /* ¾î±ß³­ Á¤µµµµ*/
+    /* ì–´ê¸‹ë‚œ ì •ë„ë„*/
     var offsetX = ((chartWidth / dataSet.length) - barWidth) / 2;
-
-    /* chart group ¸¸µé¾î Â÷Æ® À§Ä¡ ÇÑ²¨¹ø¿¡ ¹Ù²Ü ¼ö ÀÖµµ·Ï */
+    /* chart group ë§Œë“¤ì–´ ì°¨íŠ¸ ìœ„ì¹˜ í•œêº¼ë²ˆì— ë°”ê¿€ ìˆ˜ ìˆë„ë¡ */
     var g = svg.append("g")
             .attr("transform", "translate(" + (margin.left + offsetX) + ", " + margin.top + ")")
-
-    /* ¸·´ë ±×¸®±â */
+    /* ë§‰ëŒ€ ê·¸ë¦¬ê¸° */
     var item = g.selectAll("rect").data(dataSet);
-
     item.enter()
             .append("rect")
-
-            /* Á¤ÇØÁø css °ªÀÇ »öÀ» ÁÖ±â */
-            //.attr("class", "bar")
+        /* ì •í•´ì§„ css ê°’ì˜ ìƒ‰ì„ ì£¼ê¸° */
+        //.attr("class", "bar")
             .attr("width", barWidth)
-
             .attr("x", function(d, i) {
                 return i * (chartWidth / dataSet.length)
             })
@@ -95,12 +73,10 @@
             .attr("height", function(d, i) {
                 return 0;
             })
-
-            /* ¸·´ë¸¦ ´Ù¾çÇÑ color ¿É¼ÇÀ¸·Î »öÀ» ÁÖ±â */
+        /* ë§‰ëŒ€ë¥¼ ë‹¤ì–‘í•œ color ì˜µì…˜ìœ¼ë¡œ ìƒ‰ì„ ì£¼ê¸° */
             .style("fill", function(d, i) {
                 return color(i);
             })
-
             .transition()
             .delay(function(d,i) {
                 return i*50;
@@ -108,18 +84,16 @@
             .duration(function(d,i) {
                 return i*60;
             })
-
-            /* y(d.cpu_user); --> cpu_user °ªÀ» scale¿¡ ¸Â°Ô ºñÀ² º¯È¯*/
+        /* y(d.cpu_user); --> cpu_user ê°’ì„ scaleì— ë§ê²Œ ë¹„ìœ¨ ë³€í™˜*/
             .attr("y", function(d) {
-                //return d.cpu_user <- ºñÀ² Àû¿ë Àü
+                //return d.cpu_user <- ë¹„ìœ¨ ì ìš© ì „
                 return y(d.cpu_user)
             })
             .attr("height", function(d, i) {
-                //return chartHeight - d.cpu_user <- ºñÀ² Àû¿ë Àü
+                //return chartHeight - d.cpu_user <- ë¹„ìœ¨ ì ìš© ì „
                 return chartHeight - y(d.cpu_user);
             })
-
-    /*¸·´ë¿¡ ¼öÄ¡Ç¥½Ã*/
+    /*ë§‰ëŒ€ì— ìˆ˜ì¹˜í‘œì‹œ*/
     item.enter()
             .append("text")
             .attr("x", function(d, i) {
@@ -132,47 +106,39 @@
             .text(function(d, i) {
                 return d.cpu_user;
             })
-
             .transition()
-            /*.delay(500)
-            .duration(800)*/
+        /*.delay(500)
+         .duration(800)*/
             .delay(function(d,i) {
                 return i*50;
             })
             .duration(function(d,i) {
                 return i*70;
             })
-
             .style("opacity", 1)
-
-    /* legend ±×¸®±â */
-    // rect, circleµîÀº x,y¼Ó¼ºÀ¸·Î À§Ä¡ ¿Å±âÁö¸¸, g´Â transform translate·Î ¿Å±è
+    /* legend ê·¸ë¦¬ê¸° */
+    // rect, circleë“±ì€ x,yì†ì„±ìœ¼ë¡œ ìœ„ì¹˜ ì˜®ê¸°ì§€ë§Œ, gëŠ” transform translateë¡œ ì˜®ê¹€
     var legend = svg.append("g")
             .attr("class", "legend")
-
             .attr("width", svgWidth - chartWidth)
             .attr("height", chartHeight)
-
             .style("fill", "green")
             .attr("transform", "translate("+ (chartWidth + margin.left + legend_margin_left) +","+10+")")
-
     var legend_item = legend.selectAll("rect")
             .data(dataSet)
-
     legend_item.enter()
-        .append("rect")
-        .attr("width", 11)
-        .attr("height", 11)
-        .attr("x", 10)
-        .attr("y", function(d, i) {
-            return i*15
-        })
-        .attr("rx", "2px")
-        .attr("ry", "2px")
-        .style("fill", function(d, i) {
-            return color(i);
-        })
-
+            .append("rect")
+            .attr("width", 11)
+            .attr("height", 11)
+            .attr("x", 10)
+            .attr("y", function(d, i) {
+                return i*15
+            })
+            .attr("rx", "2px")
+            .attr("ry", "2px")
+            .style("fill", function(d, i) {
+                return color(i);
+            })
     legend_item.enter()
             .append("text")
             .attr("width", legend.attr("width") - 30)
@@ -186,7 +152,6 @@
             })
             .style("fill", "#1c1d1f")
             .attr("transform", "translate("+ 15 +","+10+")")
-
 </script>
 </body>
 </html>

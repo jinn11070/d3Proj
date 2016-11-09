@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>jQuery Template</title>
+	<title>javascript Template</title>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="style/style.css">
 </head>
 <body>
-<div id="top"><span>D3 Visualization</span></div>
+<div id="top"><span>javascript</span></div>
 </div>
 <div id="topmenu">
 	<ul>
@@ -27,9 +27,9 @@
 <script>
 	<!-- HelloWorld 라고 적인 문구를 눌렀을 때 alert 창이 뜸-->
 	window.onload = function() {
-		document.getElementById("content").innerHTML = "Hello World!";
-		document.getElementById("content").style.cursor = "pointer";
-		document.getElementById("content").addEventListener("click", viewMessage);
+		document.getElementById("content").innerHTML = "<span>Hello World!</span>";
+		document.getElementById("content").getElementsByTagName("span")[0].addEventListener("click", viewMessage);
+		document.getElementById("content").getElementsByTagName("span")[0].style.cursor = "pointer";
 	}
 
 	function viewMessage() {
