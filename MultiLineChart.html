@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="style/line.css">
+</head>
+<body>
+<script type="text/javascript">
+
+    var svgWidth = 1200;
+    var svgHeight = 300;
+
+    var svg = content.append("svg")
+            .attr("width", svgWidth)
+            .attr("height", svgHeight);
+
+    /* canvas 내부에 공간을 두어 그래프 그리기 */
+    var margin = {top: 20, right: 220, bottom: 25, left: 30};
+    var legend_margin_left = 40
+
+    var chartWidth = svgWidth - margin.left - margin.right;
+    var chartHeight = svgHeight - margin.top - margin.bottom;
+
+    /* 어긋난 정도도*/
+    var offsetX = ((chartWidth / dataSet.length)) / 2;
+
+    /* chart group 만들어 차트 위치 한꺼번에 바꿀 수 있도록 */
+    var g = svg.append("g")
+            .attr("transform", "translate(" + (margin.left + offsetX) + ", " + margin.top + ")")
+
+    var parseTime = d3.timeParse("%Y%m%d");
+
+    /* line 설정 */
+    var line = d3.line()
+            .x(function(d) { return x(d.date)})
+            .y(function(d) { return y(d.temperature)})
+
+            /* line path의 스타일 옵션 */
+            //.curve(d3.curveCatmullRom.alpha(0.5));
+            .curve(d3.curveNatural);
+//            .curve(d3.curveStep);
+
+    /* data parsing */
+    var cities = dataSet.columns.slice(1).map(function (city) {
+        return {
+            id: city,
+            values: dataSet.map(function (d) {
+                return {date: parseTime(d.date), temperature: d[city]};
+            })
+        };
+    });
+
+    var min = d3.min(cities, function(d1) {
+        return d3.min(d1.values, function(d2) {
+            return d2.temperature
+        });
+    })
+    var max = d3.max(cities, function(d1) {
+        return d3.max(d1.values, function(d2) {
+            return d2.temperature
+        });
+    })
+
+    /* axis 설정 - date 형식으로 설정 */
+    var x = d3.scaleTime()
+            .range([0, chartWidth]) // 왼 -> 오
+            .domain(d3.extent(dataSet, function(d) { return parseTime(d.date); }));
+
+    /* y축의 범위 설정 */
+    var y = d3.scaleLinear()
+            .range([chartHeight, 0]) // 위 -> 아래
+            .domain([min, max])
+
+    console.log(min)
+    console.log(max)
+
+    var label = d3.scaleOrdinal().range(["#E14D57", "#EC932F", "#71B37C", "#5290E9", "#965994"])
+            .domain(cities.map(function(d) {
+                return d.id
+            })) // [seoul, uiwang, sinlim]
+
+    /* axis 추가 */
+    var xAxis = svg.append("g")
+            .attr("transform", "translate(" + margin.left + ", " + (margin.top + chartHeight) + ")")
+            .call(d3.axisBottom(x))
+
+    var yAxis = svg.append("g")
+            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
+            .call(d3.axisLeft(y))
+
+    /* grid line 추가 */
+    var xGrid = svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", "translate(" + margin.left + ", " + (margin.top + chartHeight) + ")")
+            .call(d3.axisBottom(x)
+//                    .ticks(5)
+                    .tickSize(-chartHeight)
+                    .tickFormat(""));
+
+    var yGrid = svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
+            .call(d3.axisLeft(y)
+//                    .ticks(5)
+                    .tickSize(-chartWidth)
+                    .tickFormat(""));
+
+
+    /* 라인 패스 그리기 */
+    g.selectAll(".line")
+            .data(cities)
+            .enter()
+            .append("path")
+            .attr("class", "line")
+            .attr("d", function(d) { return line(d.values)})
+//            .style("stroke", "black")
+
+            .style("stroke", function(d) {
+                return label(d.id)
+            });
+
+    /* legend 그리기 */
+    // rect, circle등은 x,y속성으로 위치 옮기지만, g는 transform translate로 옮김
+    var legend = svg.append("g")
+            .attr("class", "legend")
+
+            .attr("width", svgWidth - chartWidth)
+            .attr("height", chartHeight)
+
+            .style("fill", "green")
+            .attr("transform", "translate("+ (chartWidth + margin.left + legend_margin_left) +","+10+")")
+
+    var legend_item = legend.selectAll("rect")
+            .data(cities)
+
+    legend_item.enter()
+            .append("rect")
+            .attr("width", 11)
+            .attr("height", 11)
+            .attr("x", 10)
+            .attr("y", function(d, i) {
+                return i*15
+            })
+            .attr("rx", "2px")
+            .attr("ry", "2px")
+            .style("fill", function(d, i) {
+                console.log(d.id)
+                return label(d.id)
+            })
+
+    legend_item.enter()
+            .append("text")
+            .attr("width", legend.attr("width") - 30)
+            .attr("height", 11)
+            .attr("x", 10)
+            .attr("y", function(d, i) {
+                return i*15
+            })
+            .text(function(d, i) {
+                return d.id
+            })
+            .style("fill", "#1c1d1f")
+            .attr("transform", "translate("+ 15 +","+10+")")
+
+</script>
+</body>
+</html>

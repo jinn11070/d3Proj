@@ -15,20 +15,54 @@
 
     /* canvas 내부에 공간을 두어 그래프 그리기 */
     var margin = {top: 20, right: 220, bottom: 25, left: 30};
-    var legend_margin_left = 40
 
     var chartWidth = svgWidth - margin.left - margin.right;
     var chartHeight = svgHeight - margin.top - margin.bottom;
 
+    /* 어긋난 정도도*/
+    var offsetX = ((chartWidth / dataSet.length)) / 2;
+
+    /* chart group 만들어 차트 위치 한꺼번에 바꿀 수 있도록 */
+    var g = svg.append("g")
+            .attr("transform", "translate(" + (margin.left + offsetX) + ", " + margin.top + ")")
+
+    /* line 설정 */
+    var line = d3.line()
+            .x(function(d) {return x(parseTime(d.date))})
+            .y(function(d) {return y(d.seoul)})
+
+        /* line path의 스타일 옵션 */
+        //.curve(d3.curveCatmullRom.alpha(0.5));
+        //.curve(d3.curveNatural);
+            .curve(d3.curveStep);
+
+    /* area 설정 */
+    var area = d3.area()
+            .x(function(d) { return x(parseTime(d.date)); })
+            .y0(chartHeight)
+            .y1(function(d) { return y(d.seoul); })
+            .curve(d3.curveStep);
+
+
+
+
+
+
+
+
+
+
+    var parseTime = d3.timeParse("%Y%m%d");
+
     /* axis 설정 */
-    var x = d3.scaleBand()
-            .rangeRound([0, chartWidth]) // 왼 -> 오
-            .domain(dataSet.map(function(d){return d.date}))
+    var x = d3.scaleTime()
+            .range([0, chartWidth]) // 왼 -> 오
+            .domain(d3.extent(dataSet, function(d) { return parseTime(d.date); }));
 
     /* y축의 범위 설정 */
     var y = d3.scaleLinear()
             .range([chartHeight, 0]) // 위 -> 아래
-            .domain([0, d3.max(dataSet, function(d) {return d.cpu_user})])
+            .domain([d3.min(dataSet, function(d) {return d.seoul}), d3.max(dataSet, function(d) {return d.seoul})])
 
     /* axis 추가 */
     var xAxis = svg.append("g")
@@ -44,7 +78,7 @@
             .attr("class", "grid")
             .attr("transform", "translate(" + margin.left + ", " + (margin.top + chartHeight) + ")")
             .call(d3.axisBottom(x)
-                    .ticks(5)
+//                    .ticks(5)
                     .tickSize(-chartHeight)
                     .tickFormat(""));
 
@@ -52,33 +86,18 @@
             .attr("class", "grid")
             .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
             .call(d3.axisLeft(y)
-                    .ticks(5)
+//                    .ticks(5)
                     .tickSize(-chartWidth)
                     .tickFormat(""));
 
-    /* line 설정 */
-    var line = d3.line()
-            .x(function(d) {return x((d.date))})
-            .y(function(d) {return y(d.cpu_user)})
 
-            /* line path의 스타일 옵션 */
-            //.curve(d3.curveCatmullRom.alpha(0.5));
-            //.curve(d3.curveNatural);
-            .curve(d3.curveStep);
 
-    /* area 설정 */
-    var area = d3.area()
-            .x(function(d) { return x(d.date); })
-            .y0(chartHeight)
-            .y1(function(d) { return y(d.cpu_user); })
-            .curve(d3.curveStep);
 
-    /* 어긋난 정도도*/
-    var offsetX = ((chartWidth / dataSet.length)) / 2;
 
-    /* chart group 만들어 차트 위치 한꺼번에 바꿀 수 있도록 */
-    var g = svg.append("g")
-            .attr("transform", "translate(" + (margin.left + offsetX) + ", " + margin.top + ")")
+
+
+
+
 
     /* 라인 패스 그리기 */
     g.append("path")
@@ -96,26 +115,26 @@
 
 
     /* 원 그리기 */
-    var circle = svg.append("g")
+    var dot = svg.append("g")
             .attr("transform", "translate(" + (margin.left + offsetX) + ", " + margin.top + ")")
 
-    circle.selectAll("circle")
+    dot.selectAll("circle")
             .data(dataSet)
             .enter()
             .append("circle")
             .attr("r", 4)
             .attr("cx", function(d, i) {
-                return x(d.date)
+                return x(parseTime(d.date))
             })
             .attr("cy", function(d, i) {
-                return y(d.cpu_user)
+                return y(d.seoul)
             })
 
 //            .style("fill", "#ffffff")
 //            .style("stroke", "#0AAC87")
 //            .style("stroke-width", 3)
             /* class로 스타일 주기 - 테마를 나눠서 적용할때 */
-            .attr("class", "circle-out")
+            .attr("class", "dot-out")
 
             .style("cursor", "pointer")
             .on("mouseover", function(d, i) {
@@ -124,7 +143,7 @@
 //                        .style("fill", "#ffffff")
 //                        .style("stroke", "red")
 //                        .style("stroke-width", 4)
-                        .attr("class", "circle-over")
+                        .attr("class", "dot-over")
 
                 d3.select(".tooltip_" + i).attr("display", "inline")
                 d3.select(".tooltiptext_" + i).attr("display", "inline")
@@ -135,7 +154,7 @@
 //                        .style("fill", "#ffffff")
 //                        .style("stroke", "#0AAC87")
 //                        .style("stroke-width", 3)
-                        .attr("class", "circle-out")
+                        .attr("class", "dot-out")
 
                 d3.select(".tooltip_" + i).attr("display", "none")
                 d3.select(".tooltiptext_" + i).attr("display", "none")
@@ -159,10 +178,10 @@
             .attr("rx", "3px")
             .attr("rx", "3px")
             .attr("x", function(d, i) {
-                return x(d.date) + 2
+                return x(parseTime(d.date)) + 2
             })
             .attr("y", function(d, i) {
-                return y(d.cpu_user) + 2
+                return y(d.seoul) + 2
             })
             .attr("display", "none")
 
@@ -181,25 +200,17 @@
             .attr("width", 100)
             .attr("height", 50)
             .attr("x", function(d, i) {
-                return x(d.date) + 20
+                return x(parseTime(d.date)) + 20
             })
             .attr("y", function(d, i) {
-                return y(d.cpu_user) + 20
+                return y(d.seoul) + 20
             })
             .attr("display", "none")
 
             .text(function(d) {
-                return d.cpu_user
+                return d.seoul
             })
             .style("fill", "white")
-
-
-
-
-    /* 그리드 그리기 */
-   /* var rangeX = d3.range(10, maxX, 10);
-    var rangeY = d3.range(1, maxY, 1);*/
-
 
 
 </script>

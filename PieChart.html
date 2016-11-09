@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="style/pie.css">
+</head>
+<body>
+<script type="text/javascript">
+
+    var svgWidth = 1000;
+    var svgHeight = 500;
+
+    var svg = content.append("svg")
+            .attr("width", svgWidth)
+            .attr("height", svgHeight);
+
+    /* canvas 내부에 공간을 두어 그래프 그리기 */
+    var margin = {top: 20, right: 220, bottom: 25, left: 30};
+    var legend_margin_left = 40
+
+    var chartWidth = svgWidth - margin.left - margin.right;
+    var chartHeight = svgHeight - margin.top - margin.bottom;
+
+    /* 그라데이션 색상 설정 */
+//    var color = d3.scaleOrdinal(d3.schemeCategory10)
+    // d3.scaleOrdinal().range(["#E14D57", "#EC932F", "#71B37C", "#5290E9", "#965994"])
+     var color = d3.scaleLinear().domain([1,3]).range(["brown", "steelblue"]); // 그라데이션
+
+    /* 반지름 설정 */
+    /* width, height 중 작은 수치를 기준으로 반지름 정해야 함. */
+    var radius = Math.min(chartWidth, chartHeight) / 2
+
+    /* arc */
+    var arc = d3.arc()
+            .outerRadius(radius)
+            .innerRadius(70) // 도너츠모양
+//            .innerRadius(0) // 원모양
+            .padAngle(0.01) // 피스 사이 공간
+            .cornerRadius(3) // 피스 테두리 래디어스
+
+    var label = d3.arc()
+            .outerRadius(radius)
+//            .innerRadius(70) // 도너츠모양
+            .innerRadius(0) // 원모양
+//            .padAngle(0.01) // 피스 사이 공간
+//            .cornerRadius(3) // 피스 테두리 래디어스
+
+    var data = d3.pie()
+            .sort(null)
+//            .sort(function(a, b) { return a.name.localeCompare(b.name); }); // 숫자일 경우 sort
+            .value(function(d) {
+                return d.number
+            })(dataSet)
+
+//    d3.pie()(dataSet.map(function(d) { return d.magnitude; }));
+
+
+    /* chart group 만들어 차트 위치 한꺼번에 바꿀 수 있도록 */
+    var g = svg.append("g")
+            .attr("transform", "translate(" + (svgWidth / 2) + ", " + (svgHeight / 2) + ")")
+
+    var pie = g.selectAll(".arc")
+            .data(data)
+
+
+    pie.enter()
+            .append("g")
+            .attr("class", "arc")
+            .append("path")
+            .attr("d", arc)
+            .style("fill", function(d, i) {
+
+                debugging(d);
+                return color(i);
+            })
+
+
+    pie.enter()
+            .append("g")
+            .attr("class", ".label")
+            .append("text")
+            .attr("d", label)
+            .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
+            .text(function(d) {
+                return d.data.count
+            })
+
+    /* legend 그리기 */
+    // rect, circle등은 x,y속성으로 위치 옮기지만, g는 transform translate로 옮김
+    var legend = svg.append("g")
+            .attr("class", "legend")
+
+            .attr("width", svgWidth - chartWidth)
+            .attr("height", chartHeight)
+
+            .style("fill", "green")
+            .attr("transform", "translate("+ (chartWidth + margin.left + legend_margin_left) +","+10+")")
+
+    var legend_item = legend.selectAll("rect")
+            .data(data)
+
+    legend_item.enter()
+            .append("rect")
+            .attr("width", 11)
+            .attr("height", 11)
+            .attr("x", 10)
+            .attr("y", function(d, i) {
+                return i*15
+            })
+            .attr("rx", "2px")
+            .attr("ry", "2px")
+            .style("fill", function(d, i) {
+                return color(i);
+            })
+
+    legend_item.enter()
+            .append("text")
+            .attr("width", legend.attr("width") - 30)
+            .attr("height", 11)
+            .attr("x", 10)
+            .attr("y", function(d, i) {
+                return i*15
+            })
+            .text(function(d) {
+                return d.data.count
+            })
+            .style("fill", "#1c1d1f")
+            .attr("transform", "translate("+ 15 +","+10+")")
+
+</script>
+</body>
+</html>

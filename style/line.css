@@ -20,14 +20,14 @@ text {
     opacity: .5;
 }
 
-.circle-over {
-    fill: #ffffff;
-    stroke: red;
-    stroke-width: 4
-
-}
-.circle-out {
+.dot-over {
     fill: #ffffff;
     stroke: #0AAC87;
     stroke-width: 3
+
 }
+.dot-out {
+    fill: transparent;
+    stroke: none;
+}
+

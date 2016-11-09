@@ -1,0 +1,14 @@
+
+text {
+    fill: black;
+    font-size: 12px;
+    font-weight: bold;
+
+}
+
+/*start | middle | end | inherit*/
+.label {
+    text-anchor: middle;
+}
+
+

@@ -15,9 +15,11 @@
 
     <div id="topmenu">
         <ul>
-            <li onclick="getData('sample.csv','GridChart')">Grid</li>
-            <li onclick="getData('athena.csv','LineChart')">Line</li>
-            <li onclick="getData('athena.csv','BarChart')">Bar</li>
+            <li onclick="getData('grid.csv','GridChart')">Grid</li>
+            <li onclick="getData('bar.csv','BarChart')">Bar</li>
+            <li onclick="getData('multiline.csv','LineChart')">Line</li>
+            <li onclick="getData('multiline.csv','MultiLineChart')">Multi Line</li>
+            <li onclick="getData('pie.csv','PieChart')">Pie</li>
         </ul>
     </div>
     <div id="content"></div>
@@ -29,7 +31,7 @@
     var content = d3.select("#content");
 
     $(document).ready(function() {
-        getData("sample.csv", "GridChart");
+        getData("grid.csv", "GridChart");
     });
 
     function getData(file, target) {
@@ -44,6 +46,11 @@
 
             $("#content").load(target + ".html");
         })
+    }
+
+    /* debug */
+    function debugging(target) {
+        console.log(target + ":" + JSON.stringify(target))
     }
 
 </script>
